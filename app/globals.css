@@ -1,26 +1,177 @@
 @import "tailwindcss";
 
+/* ---------------------------------------------------------------------------
+ * Agentic Prop design tokens — dark-first institutional terminal palette.
+ * Raw values live on :root; Tailwind utilities map onto them via @theme inline
+ * so `bg-surface-1`, `text-fg-muted`, `border-edge`, `text-positive/80` etc.
+ * all work, including opacity modifiers.
+ * ------------------------------------------------------------------------- */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  color-scheme: dark;
+
+  --bg: #08090c;
+  --surface-1: #0e1016;
+  --surface-2: #14171f;
+  --surface-3: #1b1f2a;
+  --surface-4: #232836;
+
+  --edge: #1e2230;
+  --edge-strong: #2c3242;
+
+  --fg: #e6e8ee;
+  --fg-muted: #9aa3b5;
+  --fg-subtle: #5f6980;
+  --fg-inverse: #08090c;
+
+  --accent: #6d7cff;
+  --accent-strong: #8b96ff;
+  --accent-fg: #ffffff;
+  --cyan: #22d3ee;
+
+  --positive: #34d399;
+  --negative: #f87171;
+  --warning: #fbbf24;
+  --info: #60a5fa;
+  --neutral: #8b93a7;
+
+  --ring: #8b96ff;
+  --shadow: 0 1px 0 0 rgb(255 255 255 / 0.03) inset, 0 8px 24px -12px rgb(0 0 0 / 0.6);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+/* Light-mode fallback: only when the OS prefers light AND the `dark` class is
+ * not forced on <html>. The root layout forces `dark`, so dark stays default. */
+@media (prefers-color-scheme: light) {
+  html:not(.dark) {
+    color-scheme: light;
+    --bg: #f5f6f8;
+    --surface-1: #ffffff;
+    --surface-2: #f7f8fa;
+    --surface-3: #eef0f4;
+    --surface-4: #e3e6ec;
+    --edge: #e2e5ec;
+    --edge-strong: #c9ceda;
+    --fg: #0f1219;
+    --fg-muted: #4b5468;
+    --fg-subtle: #7b8499;
+    --fg-inverse: #ffffff;
+    --accent: #4f5ee8;
+    --accent-strong: #3b48c9;
+    --cyan: #0891b2;
+    --positive: #059669;
+    --negative: #dc2626;
+    --warning: #d97706;
+    --info: #2563eb;
+    --neutral: #6b7280;
+    --ring: #4f5ee8;
+    --shadow: 0 1px 2px 0 rgb(15 18 25 / 0.06);
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface-1: var(--surface-1);
+  --color-surface-2: var(--surface-2);
+  --color-surface-3: var(--surface-3);
+  --color-surface-4: var(--surface-4);
+  --color-edge: var(--edge);
+  --color-edge-strong: var(--edge-strong);
+  --color-fg: var(--fg);
+  --color-fg-muted: var(--fg-muted);
+  --color-fg-subtle: var(--fg-subtle);
+  --color-fg-inverse: var(--fg-inverse);
+  --color-accent: var(--accent);
+  --color-accent-strong: var(--accent-strong);
+  --color-accent-fg: var(--accent-fg);
+  --color-cyan: var(--cyan);
+  --color-positive: var(--positive);
+  --color-negative: var(--negative);
+  --color-warning: var(--warning);
+  --color-info: var(--info);
+  --color-neutral: var(--neutral);
+  --color-ring: var(--ring);
+
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, "SF Mono", Menlo, monospace;
+
+  --shadow-panel: var(--shadow);
+
+  --text-2xs: 0.6875rem;
+  --text-2xs--line-height: 1rem;
+}
+
+@layer base {
+  html {
+    background: var(--bg);
+    -webkit-font-smoothing: antialiased;
+  }
+  body {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: var(--font-sans);
+    font-size: 13px;
+    line-height: 1.45;
+    font-feature-settings: "cv11", "ss01";
+  }
+  ::selection {
+    background: color-mix(in oklab, var(--accent) 35%, transparent);
+  }
+  :focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 1px;
+  }
+  * {
+    border-color: var(--edge);
+  }
+  input, select, textarea, button {
+    font: inherit;
+    color: inherit;
+  }
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--surface-4);
+    border: 2px solid var(--bg);
+    border-radius: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+}
+
+@utility num {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums lining-nums;
+  letter-spacing: -0.01em;
+}
+
+@utility label-caps {
+  font-size: 0.6875rem;
+  line-height: 1rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 500;
+  color: var(--fg-subtle);
+}
+
+@utility panel {
+  background: var(--surface-1);
+  border: 1px solid var(--edge);
+  border-radius: 0.5rem;
+  box-shadow: var(--shadow);
+}
+
+@keyframes ap-shimmer {
+  0% { background-position: -400px 0; }
+  100% { background-position: 400px 0; }
+}
+
+@keyframes ap-toast-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes ap-spin {
+  to { transform: rotate(360deg); }
 }
